@@ -1,0 +1,88 @@
+﻿@model IEnumerable<TipoCuenta>
+@{
+    ViewData["Title"] = "Tipos Cuentas";
+}
+
+<h1>Tipos de Cuentas</h1>
+<h5>El tipo de cuenta se refiere a como podemos agrupar cuentas.
+    Ejemplos: Prestamos, tarjetas de credito, etc.
+</h5>
+
+<a href="~/TiposCuentas/Crear" class="btn btn-primary mb-3">Crear Nuevo</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <td align="left" ><b>Acciones</b></td>
+            <td align="left" ><b>Nombre</b></td>
+        </tr>
+    </thead>
+    <tbody id="reordenable">
+        @foreach(var tipoCuenta in Model)
+        {
+            <tr >
+                <td align="left">
+                    <input type="hidden" class="ids" value="@tipoCuenta.ID">
+                    <a class="btn btn-primary" asp-action="Editar" asp-route-id="@tipoCuenta.ID">Editar</a>
+                    <a class="btn btn-danger" asp-action="Borrar" asp-route-id="@tipoCuenta.ID">Borrar</a>
+                </td>
+                <td align="left">@tipoCuenta.NOMBRE</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@section Scripts {
+  <script>
+
+const urlOrdenar = '@Url.Action("Ordenar")';
+
+//Document READY
+(function() {
+   
+    $("#reordenable" ).sortable({
+    stop:  function(e, ui)
+    {
+            actualizarOrdenes();
+    }
+    });
+
+    function actualizarOrdenes()
+    {
+        const ids = ObtenerElementos();
+        SendData(ids);
+    }
+
+    function ObtenerElementos()
+    {
+        const ids = $(".ids").map(function(){
+            return $(this).val();
+        }).get();
+        return ids;
+    }
+
+    function SendData(ids)
+    {
+        var data = JSON.stringify(ids);
+
+        fetch(urlOrdenar, {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Content-Type' : 'application/json'
+            }
+        }).then(response => response.json())
+            .catch(error => console.error('Error:', error))
+            .then(response => console.log('Success:', response));
+
+    }
+
+
+})();//END DOCUMENT READY pure javascript
+
+         
+
+  </script>
+}

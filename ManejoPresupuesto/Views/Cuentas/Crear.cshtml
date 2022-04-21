@@ -1,0 +1,53 @@
+﻿@model CuentaCreacionViewModel
+@{
+    ViewData["Title"] = "Crear Cuenta";
+}
+
+<h1>Crear Cuenta</h1>
+
+<h5>La cuenta se refiere a los distintos balances que tienes:
+    tarjeta de credito, cuenta de ahorro, prestamo, etc.
+</h5>
+
+
+<form asp-action="Crear">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="NOMBRE" class="form-label"></label>
+        <input asp-for="NOMBRE" class="form-control" />
+        <span asp-validation-for="NOMBRE" class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ID_TIPOCUENTA" class="form-label"></label>
+        <select asp-for="ID_TIPOCUENTA" class="form-select" asp-items="Model.TiposCuentas"></select>
+        <span asp-validation-for="ID_TIPOCUENTA" class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="BALANCE" class="form-label"></label>
+        <input asp-for="BALANCE" class="form-control" />
+        <span asp-validation-for="BALANCE" class="text-danger"></span>
+
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DESCRIPCION" class="form-label"></label>
+        <textarea asp-for="DESCRIPCION" class="form-control"></textarea>
+        <span asp-validation-for="DESCRIPCION" class="text-danger"></span>
+
+    </div>
+
+    <button type='submit' class="btn btn-primary">Enviar</button>
+    <a class="btn btn-secondary" href="#" onClick="window.location.href = 'Index' ;" >Cancelar</a>
+
+
+</form>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
