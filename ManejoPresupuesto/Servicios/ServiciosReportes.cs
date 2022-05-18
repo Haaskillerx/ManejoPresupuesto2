@@ -4,6 +4,7 @@ namespace ManejoPresupuesto.Servicios
 {
     public interface IServicioReportes
     {
+        Task<IEnumerable<ResultadoObtenerPorSemana>> ObtenerReporteSemanal(int id_usuario, int mes, int año, dynamic ViewBag);
         Task<ReporteTransaccionesDetalladas> ObtenerReporteTransaccionesDetalladas(int id_usuario, int mes, int anio, dynamic ViewBag);
         Task<ReporteTransaccionesDetalladas> ObtenerReporteTransaccionesDetalladasPorCuenta(int id_usuario, int id_cuenta, int mes, int anio, dynamic ViewBag);
     }
@@ -26,6 +27,24 @@ namespace ManejoPresupuesto.Servicios
         //Inyeccion de dependencias
         //Inyeccion de dependencias
 
+
+        public async Task<IEnumerable<ResultadoObtenerPorSemana>>ObtenerReporteSemanal(int id_usuario, 
+            int mes, int año, dynamic ViewBag)
+        {
+            (DateTime fechaInicio, DateTime fechaFin) = GenerarFechas(mes, año);
+
+            var parametros = new ParametroObtenerTransaccionesPorUsuario()
+            {
+                ID_USUARIO = id_usuario,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin
+            };
+
+            AsignarValoresAlViewBag(ViewBag, fechaInicio);
+            var modelo = await repositorioTransacciones.ObtenerPorSemana(parametros);
+            return modelo;
+
+        }
 
         // Reporte utilizando CUENTAS CONTROLLER //
         // Reporte utilizando CUENTAS CONTROLLER //

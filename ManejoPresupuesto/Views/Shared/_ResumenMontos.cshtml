@@ -1,0 +1,39 @@
+﻿@model ResumenMontosViewModel
+
+
+
+
+<div class="container p-2 ">
+    <!-- 1 -->
+    <div class="contenedor-totales  row" style="background-color:#f7f7f7; border:2px ridge #6b6b6b;">
+    <div class="col-sm">
+        <div>
+            <strong>Depósitos</strong>
+        </div>
+        <div class="activo">
+            @Model.Ingresos.ToString("N")
+        </div>
+    </div>
+    <!-- Separador -->
+     <!-- 2 -->
+    <div class="col-sm">
+        <div>
+            <strong>Retiros</strong>
+        </div>
+        <div class="activo">
+            @Model.Gastos.ToString("N")
+        </div>
+    </div>
+    <!-- Separador -->
+     <!-- 3 -->
+    <div class="col-sm">
+        <div>
+            <strong>Total</strong>
+        </div>
+        <div class="activo">
+            @Model.Total.ToString("N")
+        </div>
+    </div>
+    </div>
+    <!-- Separador -->
+</div>

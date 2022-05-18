@@ -14,6 +14,8 @@ namespace ManejoPresupuesto.Servicios
         Task<Transaccion> ObtenerPorID(int id, int id_usuario);
         Task<IEnumerable<Transaccion>> ObtenerPorIDCuenta(ObtenerTransaccionesPorCuenta modelo);
         Task<IEnumerable<Transaccion>> ObtenerPorID_Usuario(ParametroObtenerTransaccionesPorUsuario modelo);
+        Task<IEnumerable<ResultadoObtenerPorMes>> ObtenerPorMes(int id_usuario, int Año);
+        Task<IEnumerable<ResultadoObtenerPorSemana>> ObtenerPorSemana(ParametroObtenerTransaccionesPorUsuario modelo);
     }
 
 
@@ -171,5 +173,45 @@ namespace ManejoPresupuesto.Servicios
         }
 
 
+
+
+        //OBTENER POR SEMANA (TRANSACCIONES)
+
+        public async Task<IEnumerable<ResultadoObtenerPorSemana>> ObtenerPorSemana
+        (ParametroObtenerTransaccionesPorUsuario modelo)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<ResultadoObtenerPorSemana>(
+                @"SELECT datediff(d, @FechaInicio, FECHA_TRANSACCION) /7+1 as Semana,
+                SUM(MONTO) as Monto, C.ID_OPERACION
+                FROM Transacciones T
+                INNER JOIN CATEGORIAS C
+                ON C.ID = T.ID_CATEGORIA
+                WHERE T.ID_USUARIO = @ID_USUARIO AND
+                FECHA_TRANSACCION BETWEEN @FechaInicio AND @FechaFin
+                GROUP BY datediff(d, @FechaInicio, FECHA_TRANSACCION) / 7, C.ID_OPERACION",
+                
+                modelo);
+        }
+
+        //// OBTENER POR MENSUAL (TRANSACCIONES)
+
+        public async Task<IEnumerable<ResultadoObtenerPorMes>> ObtenerPorMes
+        (int id_usuario, int Año)
+        {
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QueryAsync<ResultadoObtenerPorMes>(
+                @"SELECT MONTH(FECHA_TRANSACCION) as Mes,
+                SUM(Monto) as Monto, C.ID_OPERACION as ID_OPERACION
+                FROM Transacciones T INNER JOIN CATEGORIAS C ON C.ID = T.ID_CATEGORIA
+                WHERE T.ID_USUARIO = @id_usuario AND YEAR(FECHA_TRANSACCION) = @Año
+                GROUP BY Month(FECHA_TRANSACCION), C.ID_OPERACION;",
+
+                new {id_usuario, Año });
+        }
+
+
+
+        //eDN CLAS
     }
 }

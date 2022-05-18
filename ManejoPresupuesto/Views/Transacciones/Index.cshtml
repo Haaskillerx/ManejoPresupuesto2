@@ -4,7 +4,12 @@
 }
 
 <h1>Indice de Transacciones</h1>
+<div class="container bground">
+        <button type='submit' class="btn btn-primary"
+        onClick=" location.href='@Url.Action("Crear", "Transacciones")'; ">Crear Nueva Transaccion</button>
+</div>
+<partial name="_Submenu" model="SubMenuTransacciones.Diario" />
 
-<partial name="_Submenu" model="Model" />
+
 
 <partial name="_ReporteTransaccionesDetalladas" model="Model" />
