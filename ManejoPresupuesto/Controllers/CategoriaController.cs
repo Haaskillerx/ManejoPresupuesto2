@@ -8,19 +8,22 @@ namespace ManejoPresupuesto.Controllers
     {
         private readonly IRepositorioCategorias repositorioCategorias;
         private readonly IServiciosUsuarios servicioUsuarios;
-        
+        private HttpContext httpContext;
 
         public CategoriaController(IRepositorioCategorias repositorioCategorias,
-            IServiciosUsuarios servicioUsuarios)
+            IServiciosUsuarios servicioUsuarios,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.repositorioCategorias = repositorioCategorias;
             this.servicioUsuarios = servicioUsuarios;
+            this.httpContext = httpContextAccessor.HttpContext;
         }
         public async Task<IActionResult> Index()
         {
             var id_usuario = servicioUsuarios.ObtenerUsuarioId();
             var categorias = await repositorioCategorias.Obtener(id_usuario);
-
+            ViewBag.idusuario = id_usuario;
+            //ViewBag.idusuario = httpContext.User.Claims.ToList();
             return View(categorias);
             
         }

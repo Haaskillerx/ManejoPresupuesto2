@@ -1,5 +1,6 @@
 ﻿using ManejoPresupuesto.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -19,12 +20,14 @@ namespace ManejoPresupuesto.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Registro()
         {
             return View();
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
 
@@ -36,6 +39,10 @@ namespace ManejoPresupuesto.Controllers
                     .FirstOrDefault();
                 id_usuarioREal = id_usuarioREal.Value;
                 */
+                var claims = User.Claims.ToList();
+                var id_usuario_real = claims.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+                var id = id_usuario_real.Value;
+
             }else
             {
 
@@ -44,6 +51,7 @@ namespace ManejoPresupuesto.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Registro(RegistroViewModel modelo)
         {
             if(!ModelState.IsValid)
@@ -76,6 +84,7 @@ namespace ManejoPresupuesto.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel modelo)
         {
             if(!ModelState.IsValid)
@@ -83,24 +92,19 @@ namespace ManejoPresupuesto.Controllers
                 return View(modelo);
             }
 
-            //var usuario = new Usuario() { Email = modelo.Email };
-             //var signedUser = userManager.FindByEmailAsync(modelo.Email);
 
             var result = await signInManager.PasswordSignInAsync(modelo.Email,
-                modelo.Password, modelo.RememberMe, false);
+            modelo.Password, modelo.RememberMe, false);
 
-       
-                
-               
-                
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Transacciones");
-                }else
-                {
-                ModelState.AddModelError(String.Empty, "Error.");
-                return View(modelo);
-                }
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index", "Transacciones");
+            }else
+            {
+            ModelState.AddModelError(String.Empty, "Error.");
+            return View(modelo);
+            }
             
 
         }

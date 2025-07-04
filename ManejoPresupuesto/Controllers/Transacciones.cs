@@ -2,12 +2,15 @@
 using ClosedXML.Excel;
 using ManejoPresupuesto.Models;
 using ManejoPresupuesto.Servicios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Data;
 
 namespace ManejoPresupuesto.Controllers
 {
+
+    [Authorize]
     public class TransaccionesController : Controller
     {
         private readonly IRepositorioTransacciones repositorioTransacciones;
@@ -262,7 +265,7 @@ namespace ManejoPresupuesto.Controllers
             return View();
         }
 
-
+        [Authorize]
         public async Task<IActionResult> Index(int mes, int año)
         {
             var id_usuario = servicioUsuarios.ObtenerUsuarioId();
@@ -273,7 +276,7 @@ namespace ManejoPresupuesto.Controllers
             return View(modelo);
         }
 
-
+        
         [HttpGet]
         public async Task<IActionResult> Crear()
         {
@@ -284,7 +287,7 @@ namespace ManejoPresupuesto.Controllers
             return View(modelo);
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Crear(TransaccionCreacionViewModel modelo)
         {

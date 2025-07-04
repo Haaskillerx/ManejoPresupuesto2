@@ -9,6 +9,7 @@ namespace ManejoPresupuesto.Servicios
     {
         Task<Usuario> BuscarUsuarioPorEmail(string emailNormalizado);
         Task<int> CrearUsuario(Usuario user);
+        Task<int> ID_USUARIO(string emailNormalizado);
     }
     public class RepositorioUsuarios: IRepositorioUsuarios
     {
@@ -29,16 +30,32 @@ namespace ManejoPresupuesto.Servicios
                 SELECT SCOPE_IDENTITY();"
                 , usuario);
 
+            var id_usuario = id;
+            //Crear usuario con el storeprocedure
+            await con.ExecuteAsync("CrearDatosUsuarioNuevo", new { id_usuario },
+                commandType: System.Data.CommandType.StoredProcedure);
+
             return id;
         }
 
-        
+
         public async Task<Usuario> BuscarUsuarioPorEmail(string emailNormalizado)
         {
             using var connection = new SqlConnection(connectionString);
             return await connection.QuerySingleOrDefaultAsync<Usuario>(@"
-            SELECT * FROM USUARIOS WHERE EMAIL_NORMALIZADO = '@emailNormalizado' ",
+            SELECT * FROM USUARIOS WHERE EMAIL_NORMALIZADO = @emailNormalizado ",
             new { emailNormalizado });
+        }
+
+
+        public async Task<int> ID_USUARIO(string emailNormalizado)
+        {
+
+            using var connection = new SqlConnection(connectionString);
+            return await connection.QuerySingleOrDefaultAsync<int>(@"
+            SELECT ID FROM USUARIOS WHERE EMAIL_NORMALIZADO = @emailNormalizado ",
+            new { emailNormalizado });
+
         }
 
 
